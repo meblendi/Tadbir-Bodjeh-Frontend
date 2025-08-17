@@ -1,0 +1,29 @@
+@media print {
+
+    /* Whatever */
+    .row:nth-child(odd) {
+        print-color-adjust: exact;
+        background-color: #efefef;
+    }
+
+
+    .page-break-before {
+        page-break-before: auto;
+        break-before: page;
+        display: block;
+        clear: both;
+        /*padding-left: 30px;*/
+    }
+
+    .page-break-after {
+        page-break-after: auto;
+        break-after: page;
+        display: block;
+        clear: both;
+        /*padding-left: 30px;*/
+    }
+
+    .page-content {
+        break-inside: avoid;
+    }
+}

@@ -1,0 +1,137 @@
+/* globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+@font-face {
+  font-family: "Yekan";
+  src: url("/Fonts/Yekan.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "nazanin";
+  src: url("/Fonts/nazanin.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  font-family: "Yekan";
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+.yekan {
+  font-family: "Yekan";
+}
+
+.nazanin {
+  font-family: "nazanin" !important;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+.mytable {
+  border: 2px solid black;
+  border-collapse: collapse;
+}
+
+.mytable td {
+  /*width: 100%; !* or any other value *!*/
+  width: 50%;
+  padding-right: 10px;
+}
+
+tr td:nth-child(2) {
+  /* Your styles here */
+  text-align: center;
+}
+
+.ant-table-cell {
+  text-align: center !important;
+  /*background-color: #f8d8d8;*/
+}
+
+.detail-table .ant-table-container {
+  border: 1px solid #afa3a3 !important;
+  border-collapse: collapse;
+  /*border-spacing: 0;*/
+  /*width: 100%;*/
+  /*    width: 100%;*/
+  /*table-layout: fixed;*/
+}
+
+.green-row {
+  background-color: rgba(248, 172, 9, 0.19) !important;
+}
+
+.p-0-cell .ant-table-cell {
+  padding: 0 !important;
+}
+
+.p-0-cell .editable-cell-value-wrap {
+  padding: 0 !important;
+}
+
+.custom-border {
+  border-width: 4px;
+}
+
+/* Adding modal animations */
+@keyframes zoomIn {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes zoomOut {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+}
+
+.modal-enter {
+  animation: zoomIn 0.3s ease-out forwards;
+}
+
+.modal-exit {
+  animation: zoomOut 0.3s ease-out forwards;
+}
+
