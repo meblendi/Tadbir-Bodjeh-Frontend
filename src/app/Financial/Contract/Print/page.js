@@ -44,7 +44,7 @@ function Contract_print(props, ref) {
     const TreasuryDeductionTitle = props.record
         ? `${toPersianNumbers(
 
-            Math.round(
+            (
                 props.record.treasury_deduction_percent
             )
         )
@@ -53,7 +53,7 @@ function Contract_print(props, ref) {
     const OverheadPercentageTitle = props.record
         ? `${toPersianNumbers(
 
-            Math.round(
+            (
                 props.record.overhead_percentage
             )
         )
@@ -62,7 +62,7 @@ function Contract_print(props, ref) {
     const TaxAmountTitle = props.record
         ? `${toPersianNumbers(
 
-            Math.round(
+            (
                 props.record.tax_percentage
             )
         )
@@ -71,7 +71,7 @@ function Contract_print(props, ref) {
     const VatAmountTitle = props.record
         ? `${toPersianNumbers(
 
-            Math.round(
+            (
                 props.record.vat_percentage
             )
         )
@@ -80,7 +80,7 @@ function Contract_print(props, ref) {
     const PerformanceWithholdingTitle = props.record
         ? `${toPersianNumbers(
 
-            Math.round(
+            (
                 props.record.performanceـwithholding_percentage
             )
         )
