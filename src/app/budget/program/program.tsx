@@ -25,7 +25,7 @@ export default function Programform({data, onOk, onCancel}: {
     const [generalCost, setGeneralCost] = useState(data?.general_cost || 0);
     const [specificCost, setSpecificCost] = useState(data?.specific_cost || 0);
     const [otherCost, setOtherCost] = useState(data?.other_cost || 0);
-    const [totalCost, setTotalCost] = useState(data?.total_cost || 0);
+    const totalCost = generalCost + specificCost + otherCost;
 
     type FieldType = {
         Location: number;
@@ -37,17 +37,6 @@ export default function Programform({data, onOk, onCancel}: {
         specific_cost?: number;
         other_cost?: number;
     };
-
-    useEffect(() => {
-        setTotalCost(generalCost + specificCost + otherCost);
-        console.log(generalCost)
-        console.log(specificCost)
-        console.log(otherCost)
-        console.log(generalCost + specificCost + otherCost)
-        console.log(totalCost)
-        form.setFieldsValue({total_cost: totalCost})
-    }, [generalCost, specificCost, otherCost]);
-
 
     const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
         console.log('Success:', values);
@@ -168,10 +157,9 @@ export default function Programform({data, onOk, onCancel}: {
                 <InputNumber style={{width: '100%'}} onChange={value => setOtherCost(Number(value))}/>
             </Form.Item>
             <Form.Item
-                label="جمع کل هزینه ها"
-                name="total_cost"
+                label="جمع کل هزینه ها"                
             >
-                <InputNumber style={{width: '100%'}} value={totalCost} disabled/>
+                <InputNumber style={{width: '100%'}} value={totalCost/100} disabled/>
             </Form.Item>
             <Form.Item wrapperCol={{offset: 8, span: 16}}>
                 <Button type="primary" htmlType="submit">

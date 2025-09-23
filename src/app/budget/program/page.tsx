@@ -7,6 +7,22 @@ import {DatePicker as DatePickerJalali, jalaliPlugin, useJalaliLocaleListener} f
 import dayjs from "dayjs";
 import Programform from "@/app/budget/program/program";
 
+export function numberWithCommas(x) {
+    return x !== undefined && x !== null ? x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "0";
+}
+
+function toPersianNumbers(str) {
+    if (str == null) {
+        // Handle null or undefined values
+        return '';
+    }
+
+    const persianNumbers = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+    return str.toString().replace(/[0-9]/g, function (w) {
+        return persianNumbers[+w];
+    });
+}
+
 export type ProgramData = {
     id?: number;
     name?: string;
@@ -18,6 +34,7 @@ export type ProgramData = {
     specific_cost?: number;
     other_cost?: number;
     total_cost?: number;
+    total_price?: number; 
 };
 export default function Program() {
     const [data, setData] = useState([]);
@@ -116,29 +133,64 @@ export default function Program() {
             title: 'کد مالی',
             dataIndex: 'fin_code',
             key: 'fin_code',
+        },        
+        {
+            title: 'هزینه عمومی',
+            dataIndex: 'general_cost',
+            key: 'general_cost',
+            render: (value) => {
+                            const validValue = value || 0; // Default to 0 if value is undefined or null
+                            return toPersianNumbers(numberWithCommas(validValue));
+                        },
         },
         {
             title: 'هزینه اختصاصی',
-            dataIndex: 'general_cost',
-            key: 'general_cost'
-
-        },
-        {
-            title: 'هزینه عمومی',
             dataIndex: 'specific_cost',
-            key: 'specific_cost'
+            key: 'specific_cost',
+            render: (value) => {
+                            const validValue = value || 0; // Default to 0 if value is undefined or null
+                            return toPersianNumbers(numberWithCommas(validValue));
+                        },
+
         },
         {
             title: 'هزینه متفرقه',
             dataIndex: 'other_cost',
-            key: 'other_cost'
+            key: 'other_cost',
+            render: (value) => {
+                            const validValue = value || 0; // Default to 0 if value is undefined or null
+                            return toPersianNumbers(numberWithCommas(validValue));
+                        },
         },
         {
-            title: 'جمع'
-            , dataIndex: 'total_cost', key: 'total_cost'
-            , render: (_, rec) => <span>{rec.general_cost + rec.specific_cost + rec.other_cost}</span>
-
-        }
+            title: 'جمع',
+            dataIndex: 'total_cost',
+            key: 'total_cost',
+            render: (_, rec) => {
+                const total = (rec.general_cost || 0) + (rec.specific_cost || 0) + (rec.other_cost || 0);
+                return toPersianNumbers(numberWithCommas(total/100));
+            }
+        },
+        {
+            title: 'جمع اسناد',
+            dataIndex: 'total_price',
+            key: 'total_price',
+            render: (value) => {
+                const validValue = value || 0;
+                return toPersianNumbers(numberWithCommas(validValue));
+            },
+        },
+        {
+            title: 'باقیمانده',
+            dataIndex: 'remaining_amount',
+            key: 'remaining_amount',
+            render: (_, rec) => {
+                const totalCost = (rec.general_cost || 0) + (rec.specific_cost || 0) + (rec.other_cost || 0);
+                const totalPrice = rec.total_price || 0;
+                const remaining = (totalCost/100) - totalPrice;
+                return toPersianNumbers(numberWithCommas(remaining));
+            },
+        },
 
     ]
 

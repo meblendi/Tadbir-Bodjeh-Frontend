@@ -230,6 +230,32 @@ export default function Fin_detail(props) {
     const filterOption = (input, option) =>
         (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
 
+    const [programsWithCosts, setProgramsWithCosts] = useState({});
+
+    // Add this useEffect to fetch program costs
+    useEffect(() => {
+        const fetchProgramCosts = async () => {
+            if (relation.length > 0) {
+                const allProgramIds = relation.flatMap(item =>
+                    item.programs.map(program => program.id)
+                );
+
+                try {
+                    const programCosts = {};
+                    for (const programId of allProgramIds) {
+                        const response = await api().url(`/api/program/${programId}/`).get().json();
+                        programCosts[programId] = response;
+                    }
+                    setProgramsWithCosts(programCosts);
+                } catch (error) {
+                    console.error('Error fetching program costs:', error);
+                }
+            }
+        };
+
+        fetchProgramCosts();
+    }, [relation]);
+
     const columns = [
 
         {
@@ -299,14 +325,14 @@ export default function Fin_detail(props) {
         {
             title: 'ردیف هزینه',
             dataIndex: 'budget_row',
-            key: 'budget_row',            
+            key: 'budget_row',
             render: (_, record) => {
                 const editable = isEditing(record);
                 return editable ? (
                     <Form.Item
                         name="budget_row"
-                        style={{ margin: 0}}
-                        
+                        style={{ margin: 0 }}
+
                     >
                         <Select
                             style={{ width: '100%' }}
@@ -353,10 +379,22 @@ export default function Fin_detail(props) {
                                 relation
                                     .filter(item => item.budget_row && item.budget_row.id === selected_relation)
                                     .flatMap(item =>
-                                        item.programs.map(program => ({
-                                            label: program.name,
-                                            value: program.id
-                                        }))
+                                        item.programs.map(program => {
+                                            const programWithCost = programsWithCosts[program.id] || program;
+
+                                            const general_cost = programWithCost.general_cost || 0;
+                                            const specific_cost = programWithCost.specific_cost || 0;
+                                            const other_cost = programWithCost.other_cost || 0;
+                                            const total_price = programWithCost.total_price || 0;
+
+                                            const totalCost = general_cost + specific_cost + other_cost;
+                                            const remaining = (totalCost / 100) - total_price;
+
+                                            return {
+                                                label: `${program.name} - باقیمانده: ${toPersianNumbers(numberWithCommas(remaining))}`,
+                                                value: program.id
+                                            };
+                                        })
                                     )
                             }
                         />
@@ -390,7 +428,7 @@ export default function Fin_detail(props) {
                             filterOption={(input, option) =>
                                 (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                             }
-                            
+
                             options={[
                                 { label: "عمومی", value: 0 },
                                 { label: "اختصاصی", value: 1 },
