@@ -830,6 +830,31 @@ const Miscellaneous_Doc = (prop) => {
     id: id
   };
 
+  const [programsWithCosts, setProgramsWithCosts] = useState({});
+
+  // Add this useEffect to fetch program costs
+  useEffect(() => {
+    const fetchProgramCosts = async () => {
+      if (relation.length > 0) {
+        const allProgramIds = relation.flatMap(item =>
+          item.programs.map(program => program.id)
+        );
+
+        try {
+          const programCosts = {};
+          for (const programId of allProgramIds) {
+            const response = await api().url(`/api/program/${programId}/`).get().json();
+            programCosts[programId] = response;
+          }
+          setProgramsWithCosts(programCosts);
+        } catch (error) {
+          console.error('Error fetching program costs:', error);
+        }
+      }
+    };
+
+    fetchProgramCosts();
+  }, [relation]);
 
   return (
     <Form
@@ -916,7 +941,7 @@ const Miscellaneous_Doc = (prop) => {
       </Row>
 
       <Row gutter={50}>
-        <Col span={8}>
+        <Col span={6}>
           <Form.Item
             name="Location"
             label="محل هزینه"
@@ -948,7 +973,7 @@ const Miscellaneous_Doc = (prop) => {
             />
           </Form.Item>
         </Col>
-        <Col span={8}>
+        <Col span={6}>
           <Form.Item name="budget_row" label="ردیف هزینه" >
             <Select
               showSearch
@@ -969,20 +994,34 @@ const Miscellaneous_Doc = (prop) => {
             />
           </Form.Item>
         </Col>
-        <Col span={8}>
+        <Col span={12}>
           <Form.Item name="program" label="برنامه">
             <Select
               showSearch
               filterOption={filterOption}
-              placeholder=" انتخاب برنامه"
-              options={relation
-                .filter((item) => item.budget_row.id === selected_relation)
-                .flatMap((item) =>
-                  item.programs.map((program) => ({
-                    label: program.name,
-                    value: program.id,
-                  }))
-                )}
+              placeholder="انتخاب برنامه"
+              options={
+                relation
+                  .filter(item => item.budget_row && item.budget_row.id === selected_relation)
+                  .flatMap(item =>
+                    item.programs.map(program => {
+                      const programWithCost = programsWithCosts[program.id] || program;
+
+                      const general_cost = programWithCost.general_cost || 0;
+                      const specific_cost = programWithCost.specific_cost || 0;
+                      const other_cost = programWithCost.other_cost || 0;
+                      const total_price = programWithCost.total_price || 0;
+
+                      const totalCost = general_cost + specific_cost + other_cost;
+                      const remaining = (totalCost / 100) - total_price;
+
+                      return {
+                        label: `${program.name} - باقیمانده: ${toPersianNumbers(numberWithCommas(remaining))}`,
+                        value: program.id
+                      };
+                    })
+                  )
+              }
             />
           </Form.Item>
         </Col>
