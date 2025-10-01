@@ -410,7 +410,7 @@ function Contract_print(props, ref) {
         {
             title: "مبلغ نهایی قابل پرداخت",
             dataIndex: 'final_payable_amount',
-            render: (value) => value ? <strong>{toPersianNumbers(numberWithCommas(value))}</strong> : '',
+            render: (value) => value ? <strong>{toPersianNumbers(numberWithCommas(Math.round(value)))}</strong> : '',
         },
     ];
 
